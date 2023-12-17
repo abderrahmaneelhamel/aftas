@@ -44,8 +44,8 @@ public class FishService {
         return fishRepository.findAll();
     }
 
-    public int getPointsForFishLevel(Long levelId) {
-        Level level = levelService.getLevelById(levelId);
+    public int getPointsForFishLevel(Fish fish) {
+        Level level = levelService.getLevelById(fish.getLevel().getId());
         return (level != null) ? level.getPoints() : 0;
     }
 }

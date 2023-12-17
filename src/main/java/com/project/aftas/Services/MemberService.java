@@ -8,6 +8,8 @@ import com.project.aftas.Repositories.CompetitionRepository;
 import com.project.aftas.Repositories.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,8 +51,8 @@ public class MemberService {
         return memberRepository.findById(memberId).orElse(null);
     }
 
-    public List<Member> getAllMembers() {
-        return memberRepository.findAll();
+    public Page<Member> getAllMembers(Pageable pageable) {
+        return memberRepository.findAll(pageable);
     }
 
     public List<Member> searchMembers(String searchTerm) {

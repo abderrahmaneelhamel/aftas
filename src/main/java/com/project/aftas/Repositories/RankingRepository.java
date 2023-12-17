@@ -19,6 +19,4 @@ public interface RankingRepository extends JpaRepository<Ranking, Long> {
     @Modifying
     @Query("UPDATE Ranking r SET r.points = r.points + :pointsForFishCaught WHERE r.id = :rankingId")
     void updatePointsForFishCaught(@Param("rankingId") Long rankingId, @Param("pointsForFishCaught") Integer pointsForFishCaught);
-
-    List<Ranking> findTopByOrderByPointsDesc();
 }

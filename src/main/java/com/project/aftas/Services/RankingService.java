@@ -3,6 +3,7 @@ package com.project.aftas.Services;
 import com.project.aftas.Models.entities.Competition;
 import com.project.aftas.Models.entities.Member;
 import com.project.aftas.Models.entities.Ranking;
+import com.project.aftas.Repositories.CompetitionRepository;
 import com.project.aftas.Repositories.RankingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -15,6 +16,8 @@ public class RankingService {
 
     @Autowired
     private RankingRepository rankingRepository;
+    @Autowired
+    private CompetitionRepository competitionRepository;
 
     public Ranking createRanking(Ranking ranking) {
         return rankingRepository.save(ranking);
@@ -53,7 +56,7 @@ public class RankingService {
     }
 
 
-    public List<Ranking> findMembersWithHighestScore() {
-        return rankingRepository.findTopByOrderByPointsDesc();
+    public List<Ranking> findMembersWithHighestScore(Long competitionId) {
+        return rankingRepository.findByCompetitionId(competitionId, Sort.by(Sort.Order.asc("rank")));
     }
 }

@@ -5,6 +5,8 @@ import com.project.aftas.Models.entities.Competition;
 import com.project.aftas.Models.entities.Member;
 import com.project.aftas.Services.CompetitionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.*;
@@ -15,8 +17,8 @@ import java.util.Map;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/api/competitions")
 @Validated
+@RequestMapping("/api/competitions")
 public class CompetitionController {
 
     private final CompetitionService competitionService;
@@ -43,8 +45,8 @@ public class CompetitionController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Competition>> getAllCompetitions() {
-        List<Competition> competitions = competitionService.getAllCompetitions();
+    public ResponseEntity<Page<Competition>> getAllCompetitions(Pageable pageable) {
+        Page<Competition> competitions = competitionService.getAllCompetitions(pageable);
         return ResponseEntity.ok(competitions);
     }
 

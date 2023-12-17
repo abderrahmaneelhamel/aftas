@@ -11,10 +11,13 @@ import com.project.aftas.Repositories.HuntingRepository;
 import com.project.aftas.Repositories.MemberRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -51,6 +54,10 @@ public class CompetitionService {
     public Competition createCompetition(CompetitionDTO competitionDTO) {
         Competition competition = competitionMapper.toEntity(competitionDTO);
 
+        if (competition.getMembers() == null) {
+            competition.setMembers(new HashSet<>());
+        }
+
         Set<Member> existingMembers = competition.getMembers().stream()
                 .map(member -> memberRepository.findById(member.getId())
                         .orElseThrow(() -> new RuntimeException("Member not found with ID: " + member.getId())))
@@ -62,6 +69,7 @@ public class CompetitionService {
     }
 
 
+
     public Competition getCompetitionEntityById(Long competitionId) {
         return competitionRepository.findById(competitionId).orElse(null);
     }
@@ -70,8 +78,8 @@ public class CompetitionService {
         return getCompetitionEntityById(competitionId);
     }
 
-    public List<Competition> getAllCompetitions() {
-        return competitionRepository.findAll();
+    public Page<Competition> getAllCompetitions(Pageable pageable) {
+        return competitionRepository.findAll(pageable);
     }
 
     @Transactional
@@ -96,7 +104,7 @@ public class CompetitionService {
         return competitionMapper.toDtoList(ongoingCompetitions);
     }
 
-    private boolean isCompetitionOngoing(Competition competition) {
+    public boolean isCompetitionOngoing(Competition competition) {
         Date currentDate = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String formattedCurrentDate = dateFormat.format(currentDate);
@@ -110,7 +118,12 @@ public class CompetitionService {
         if (member != null) {
             Competition competition = competitionRepository.findById(competitionId).orElse(null);
             if (competition != null) {
-                competition.getMembers().add(member);
+                Set<Member> members = competition.getMembers();
+                if (members == null) {
+                    members = new HashSet<>(); // Initialize the set if it's null
+                    competition.setMembers(members);
+                }
+                members.add(member);
                 return competitionRepository.save(competition);
             }
         }
@@ -120,9 +133,9 @@ public class CompetitionService {
     public void updatePointsForFishCaught(Long memberId, Long competitionId, Long fishId) {
         Member member = memberService.getMemberById(memberId);
         if (member != null) {
-            int pointsForFishCaught = fishService.getPointsForFishLevel(fishId);
             Competition competition = competitionRepository.findById(competitionId).orElse(null);
             Fish fish = fishService.getFishById(fishId);
+            int pointsForFishCaught = fishService.getPointsForFishLevel(fish);
 
             if (competition != null) {
                 // Check if the Hunting entry already exists for the same Member, Competition, and Fish

@@ -16,9 +16,9 @@ public class RankingController {
     @Autowired
     private RankingService rankingService;
 
-    @GetMapping("/highest-score")
-    public ResponseEntity<List<Ranking>> getMembersWithHighestScore() {
-        List<Ranking> membersWithHighestScore = rankingService.findMembersWithHighestScore();
+    @GetMapping("/highest-score/{competitionId}")
+    public ResponseEntity<List<Ranking>> getMembersWithHighestScore(@PathVariable Long competitionId) {
+        List<Ranking> membersWithHighestScore = rankingService.findMembersWithHighestScore(competitionId);
 
         if (membersWithHighestScore.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

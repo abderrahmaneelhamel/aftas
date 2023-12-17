@@ -10,8 +10,12 @@ import java.util.List;
 @Service
 public class LevelService {
 
+    private final LevelRepository levelRepository;
+
     @Autowired
-    private LevelRepository levelRepository;
+    public LevelService(LevelRepository levelRepository){
+        this.levelRepository = levelRepository;
+    }
 
     public Level createLevel(Level level) {
         return levelRepository.save(level);

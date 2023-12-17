@@ -1,5 +1,6 @@
 package com.project.aftas.Models.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.Date;
@@ -42,6 +43,7 @@ public class Member {
     private Date membershipDate;
 
     @ManyToMany(fetch = FetchType.EAGER)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinTable(
             name = "competition_member",
             joinColumns = @JoinColumn(name = "member_id"),
