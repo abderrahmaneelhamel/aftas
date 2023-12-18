@@ -43,10 +43,8 @@ public class MemberController {
             Member createdMember = memberService.createMember(memberDTO);
             return ResponseEntity.ok(createdMember);
         } catch (MemberAlreadyExistsException ex) {
-            // Handle specific exception
             return ResponseEntity.status(409).body(ex.getMessage());
         } catch (Exception ex) {
-            // Handle other exceptions
             return ResponseEntity.status(500).body("An internal server error occurred: " + ex.getMessage());
         }
     }

@@ -78,8 +78,31 @@ public class CompetitionService {
         return getCompetitionEntityById(competitionId);
     }
 
-    public Page<Competition> getAllCompetitions(Pageable pageable) {
+
+    public List<CompetitionDTO> getAllCompetitions() {
+        List<CompetitionDTO> competitions = competitionMapper.toDtoList(competitionRepository.findAll());
+
+        return competitions.stream()
+                .map(this::updateCompetitionStatus)
+                .collect(Collectors.toList());
+    }
+    public Page<Competition> getAllCompetitions(Pageable pageable){
         return competitionRepository.findAll(pageable);
+    }
+
+    private CompetitionDTO updateCompetitionStatus(CompetitionDTO competitionDTO) {
+        Date currentDate = new Date();
+
+        if (currentDate.before(competitionDTO.getDate())) {
+            competitionDTO.setStatus("coming");
+        } else if (currentDate.after(competitionDTO.getDate())) {
+            competitionDTO.setStatus("finished");
+        } else {
+            competitionDTO.setStatus("ongoing");
+        }
+
+        // Assuming your competitionMapper can also map from CompetitionDTO to Competition
+        return competitionDTO;
     }
 
     @Transactional

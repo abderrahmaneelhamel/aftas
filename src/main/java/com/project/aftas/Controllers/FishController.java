@@ -33,4 +33,21 @@ public class FishController {
     public List<Fish> getAllFish() {
         return fishService.getAllFish();
     }
+
+    @PostMapping("/checkWeight/{fishId}")
+    public ResponseEntity<String> checkFishWeight(@PathVariable Long fishId, @RequestParam Double weight) {
+        Fish fish = fishService.getFishById(fishId);
+
+        if (fish == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        boolean isAccepted = fishService.isFishWeightAccepted(fish, weight);
+
+        if (isAccepted) {
+            return ResponseEntity.ok("Accepted: Fish weight is within or above the average range.");
+        } else {
+            return ResponseEntity.ok("Rejected: Fish weight is below the average range.");
+        }
+    }
 }

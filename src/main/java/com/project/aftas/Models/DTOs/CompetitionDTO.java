@@ -18,6 +18,8 @@ public class CompetitionDTO {
     @FutureOrPresent(message = "Date must be in the present or future")
     private Date date;
 
+    private String status;
+
     @NotNull(message = "Start time is required")
     private Time startTime;
 
@@ -32,4 +34,6 @@ public class CompetitionDTO {
 
     @NotBlank(message = "Location is required")
     private String location;
+
+
 }

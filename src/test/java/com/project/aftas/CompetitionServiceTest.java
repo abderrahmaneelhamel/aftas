@@ -223,7 +223,6 @@ class CompetitionServiceTest {
         Long competitionId = 2L;
         Long fishId = 3L;
 
-
         Member member = new Member();
         Competition competition = new Competition();
         Fish fish = new Fish();
@@ -232,7 +231,7 @@ class CompetitionServiceTest {
         when(memberService.getMemberById(memberId)).thenReturn(member);
         when(competitionRepository.findById(competitionId)).thenReturn(Optional.of(competition));
         when(fishService.getFishById(fishId)).thenReturn(fish);
-        when(fishService.getPointsForFishLevel(fishId)).thenReturn(pointsForFishCaught);
+        when(fishService.getPointsForFishLevel(fish)).thenReturn(pointsForFishCaught);
         when(huntingRepository.findByMemberAndCompetitionAndFish(member, competition, fish)).thenReturn(null);
 
         // Act

@@ -48,4 +48,10 @@ public class FishService {
         Level level = levelService.getLevelById(fish.getLevel().getId());
         return (level != null) ? level.getPoints() : 0;
     }
+
+    public boolean isFishWeightAccepted(Fish fish, Double weight) {
+        Double averageWeight = fish.getAverageWeight();
+
+        return weight >= averageWeight;
+    }
 }
