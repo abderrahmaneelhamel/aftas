@@ -3,6 +3,7 @@ package com.project.aftas.Services;
 import com.project.aftas.Models.entities.Competition;
 import com.project.aftas.Models.entities.Member;
 import com.project.aftas.Models.entities.Ranking;
+import com.project.aftas.Models.entities.RankingEmbededId;
 import com.project.aftas.Repositories.CompetitionRepository;
 import com.project.aftas.Repositories.RankingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +32,10 @@ public class RankingService {
             ranking.setPoints(ranking.getPoints() + pointsForFishCaught);
             rankingRepository.save(ranking);
         } else {
+            RankingEmbededId rankingEmbededId  = new RankingEmbededId(member, competition);
             // If the ranking doesn't exist, create a new one
             Ranking newRanking = Ranking.builder()
-                    .member(member)
-                    .competition(competition)
+                    .EmbeddedId(rankingEmbededId)
                     .points(pointsForFishCaught)
                     .build();
             rankingRepository.save(newRanking);

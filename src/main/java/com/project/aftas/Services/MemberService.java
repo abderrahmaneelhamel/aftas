@@ -4,12 +4,16 @@ import com.project.aftas.Models.DTOs.MemberDTO;
 import com.project.aftas.Models.entities.Competition;
 import com.project.aftas.Models.entities.Member;
 import com.project.aftas.Models.Mappers.MemberMapper;
+import com.project.aftas.Models.user.Role;
+import com.project.aftas.Models.user.User;
+import com.project.aftas.Models.user.UserRepository;
 import com.project.aftas.Repositories.CompetitionRepository;
 import com.project.aftas.Repositories.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,14 +23,19 @@ import java.util.stream.Collectors;
 @Service
 public class MemberService {
 
-    @Autowired
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
+    private final CompetitionRepository  competitionRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final MemberMapper memberMapper;
 
-    @Autowired
-    private CompetitionRepository  competitionRepository;
-
-    @Autowired
-    private MemberMapper memberMapper;
+    public MemberService(UserRepository userRepository, PasswordEncoder passwordEncoder,MemberRepository memberRepository, CompetitionRepository competitionRepository, MemberMapper memberMapper){
+        this.memberRepository = memberRepository;
+        this.competitionRepository = competitionRepository;
+        this.memberMapper = memberMapper;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public Member createMember(MemberDTO memberDTO) {
         Member member = memberMapper.toEntity(memberDTO);
@@ -42,8 +51,13 @@ public class MemberService {
                 .collect(Collectors.toSet());
 
         member.setCompetitions(existingCompetitions);
-        System.out.println(member);
-        System.out.println("hello dto: "+memberMapper.toDto(member));
+        var user = User.builder()
+                .name(member.getFirstName())
+                .email(member.getEmail())
+                .password(passwordEncoder.encode("password"))
+                .role(Role.MEMBER)
+                .build();
+        userRepository.save(user);
         return memberRepository.save(member);
     }
 
@@ -68,5 +82,11 @@ public class MemberService {
             return memberRepository.save(member);
         }
         return null;
+    }
+
+    public List<User> getAllJurys() {
+        List<User> jurys = userRepository.getJurys();
+        System.out.println(jurys);
+        return jurys;
     }
 }

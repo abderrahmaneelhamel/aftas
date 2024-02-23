@@ -33,6 +33,9 @@ public class Member {
     private String nationality;
 
     @Column(nullable = false)
+    private String email;
+
+    @Column(nullable = false)
     private String identityNumber;
 
     @Enumerated(EnumType.STRING)

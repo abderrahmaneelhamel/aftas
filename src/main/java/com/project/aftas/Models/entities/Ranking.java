@@ -11,15 +11,8 @@ import lombok.*;
 @Table(name = "ranking")
 public class Ranking {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @ManyToOne(optional = false)
-    private Member member;
-
-    @ManyToOne(optional = false)
-    private Competition competition;
+    @EmbeddedId
+    private RankingEmbededId EmbeddedId;
 
     @Column(nullable = false)
     private int points;

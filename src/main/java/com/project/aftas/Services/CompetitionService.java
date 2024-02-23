@@ -161,25 +161,29 @@ public class CompetitionService {
             int pointsForFishCaught = fishService.getPointsForFishLevel(fish);
 
             if (competition != null) {
-                // Check if the Hunting entry already exists for the same Member, Competition, and Fish
-                Hunting existingHunting = huntingRepository.findByMemberAndCompetitionAndFish(member, competition, fish);
+                Date date = new Date();
+                Date CompetitionDate = competition.getDate();
+                if (date.after(CompetitionDate)) {
+                    // Check if the Hunting entry already exists for the same Member, Competition, and Fish
+                    Hunting existingHunting = huntingRepository.findByMemberAndCompetitionAndFish(member, competition, fish);
 
-                if (existingHunting != null) {
-                    // If it exists, update the number of fish
-                    existingHunting.setNumberOfFish(existingHunting.getNumberOfFish() + 1);
-                    huntingRepository.save(existingHunting);
-                } else {
-                    // If it doesn't exist, create a new Hunting entry
-                    Hunting newHunting = Hunting.builder()
-                            .member(member)
-                            .competition(competition)
-                            .fish(fish)
-                            .numberOfFish(1)
-                            .build();
-                    huntingRepository.save(newHunting);
+                    if (existingHunting != null) {
+                        // If it exists, update the number of fish
+                        existingHunting.setNumberOfFish(existingHunting.getNumberOfFish() + 1);
+                        huntingRepository.save(existingHunting);
+                    } else {
+                        // If it doesn't exist, create a new Hunting entry
+                        Hunting newHunting = Hunting.builder()
+                                .member(member)
+                                .competition(competition)
+                                .fish(fish)
+                                .numberOfFish(1)
+                                .build();
+                        huntingRepository.save(newHunting);
+                    }
+                    // Update points for the fish caught
+                    rankingService.updatePointsForFishCaught(member, competition, pointsForFishCaught);
                 }
-                // Update points for the fish caught
-                rankingService.updatePointsForFishCaught(member, competition, pointsForFishCaught);
             }
         }
     }

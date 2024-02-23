@@ -12,11 +12,13 @@ import java.util.List;
 
 public interface RankingRepository extends JpaRepository<Ranking, Long> {
 
+    @Query("SELECT r FROM Ranking r WHERE r.EmbeddedId.competition.id = :competitionId ORDER BY r.points DESC")
     List<Ranking> findByCompetitionId(Long competitionId, Sort sort);
 
+    @Query("SELECT r FROM Ranking r WHERE r.EmbeddedId.member.id = :memberId AND r.EmbeddedId.competition.id = :competitionId")
     Ranking findByMemberAndCompetition(Member member, Competition competition);
 
-    @Modifying
-    @Query("UPDATE Ranking r SET r.points = r.points + :pointsForFishCaught WHERE r.id = :rankingId")
-    void updatePointsForFishCaught(@Param("rankingId") Long rankingId, @Param("pointsForFishCaught") Integer pointsForFishCaught);
+//    @Modifying
+//    @Query("UPDATE Ranking r SET r.points = r.points + :pointsForFishCaught WHERE r.id = :rankingId")
+//    void updatePointsForFishCaught(@Param("rankingId") Long rankingId, @Param("pointsForFishCaught") Integer pointsForFishCaught);
 }

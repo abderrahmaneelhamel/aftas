@@ -36,14 +36,9 @@ public class Competition {
     @Column(nullable = false)
     private int numberOfParticipants;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "competition_member",
-            joinColumns = @JoinColumn(name = "competition_id"),
-            inverseJoinColumns = @JoinColumn(name = "member_id")
-    )
-    private Set<Member> members;
-
     @Column(nullable = false)
     private String location;
+
+    @ManyToMany
+    private Set<Member> members;
 }

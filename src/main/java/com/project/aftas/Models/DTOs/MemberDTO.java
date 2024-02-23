@@ -20,6 +20,9 @@ public class MemberDTO {
     @NotBlank(message = "First name is required")
     private String firstName;
 
+    @NotBlank(message = "email is required")
+    private String email;
+
     @NotBlank(message = "Nationality is required")
     private String nationality;
 
